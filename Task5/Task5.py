@@ -6,15 +6,51 @@ with open("first_expression.txt", "r") as file:
 with open("second_expression.txt", "r") as file:
     second_expression = file.read()
 
-first_expression = str.replace(first_expression, "- ", "+ -").split()
-second_expression = str.replace(second_expression, "- ", "+ -").split()
 
-first_expression = list(filter(lambda x: x != "+" and x != "=" and x != "0", first_expression))
+def to_tuple(my_string):
+    my_string = str.replace(my_string, "- ", "+ -").split()
+    my_string = list(filter(lambda x: x != "+" and x != "=" and x != "0", my_string))
+    for i in range(len(my_string)):
+        my_string[i] = my_string[i].split("*")
+    return my_string
 
-# def to_tuple(array):
+
+first_expression = to_tuple(first_expression)
+second_expression = to_tuple(second_expression)
+
+sum_expression = first_expression + second_expression
+for i in range (len(sum_expression)):
+    if len(sum_expression[i]) == 1:
+        sum_expression[i] = [sum_expression[i].pop(0), "X^0"]
+cash = []
+answer = []
+
+print(sum_expression)
+
+for i in range(len(sum_expression)):
+    key = sum_expression[i][1]
+    if key not in cash:
+        cash.append(key)
+        current_sum = int(sum_expression[i][0])
+        for j in range(i + 1, len(sum_expression)):
+                if key == sum_expression[j][1]:
+                    current_sum += int(sum_expression[j][0])
+        answer.append([current_sum, key])
 
 
-print(first_expression)
+for i in range(len(answer)):
+    answer[i] = str(answer[i][0]) + "*" + str(answer[i][1])
+answer = str(" + ".join(answer))
+
+answer = str.replace(answer, "+ -", "- ")
+answer = str.replace(answer, "*X^0", "")
+answer = str.replace(answer, "1*", "")
+
+answer += " = 0"
+
+with open("answer.txt", "w") as file:
+    file.write(answer)
+
 
 
 
